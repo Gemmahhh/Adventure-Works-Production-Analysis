@@ -23,17 +23,17 @@
   10 |	Rowguide (Scrap Reason table) |
   11 |	Rowguide (Bill Of Material table) |
 
-* For all the Modified date columns across all the tables chosen for the analysis, I separated the 'date' and 'time' into different columns
+* For the "Modified date" columns across all the tables chosen for the analysis, I separated the 'date' and 'time' into different columns
  
-* I created extra columns which was used for the Key Influencers chart in the Overview table, the columns are - Delay and Scrapped.
-  * The delay column simply identifies if a row has any digit above 0 in the "Delay_days" table then assigns "Delay" else it assigns "No Delay"
-  * The scrapped column identifies if a row has any digit above 0 in the "ScrapReasonID" table then assigns "Scrapped" else it assigns "Not Scrapped"
+* I created extra columns which was used for the Key Influencers chart (in the Overview report), the columns are - Delay and Scrapped.
+  * The delay column simply identifies if a row has any digit above 0 in the "Delay_days" table then assigns "Delay" to the row else it assigns "No Delay"
+  * The scrapped column identifies if a row has any digit above 0 in the "ScrapReasonID" table then assigns "Scrapped" to the row else it assigns "Not Scrapped"
 
 * I created an extra column to find out the difference between the "Scheduled Start" date and "Actual Start" date then gave it a column name "Delay in Start days"
 
 * Then I created another column that outputs the difference between the "Actual End date" and "Actual Start date" and named the column "Production days"
 
-In Power BI, the visualization pane, I created the Calender table using the calender auto DAX formula ie 
+In Power BI (the visualization pane), I created the Calender table using the calender auto DAX formula ie 
 
 ```dax
   Calendar = CALENDARAUTO()
@@ -47,11 +47,11 @@ Then I created the following columns in the Calender table
   Month number = Month('Calendar'[Date])  
 
 After I was done with the Calender table, I created the following measures
-* <strong>Order Measure</strong>: This measure sums up the Orderqty column and it's used to create other measures needed for this analysis.
+* <strong>Order Measure</strong>: This measure sums up the Orderqty column (in the Work Order table) and it was used to create other measures needed for this analysis.
   ```dax
   Order Measure = CALCULATE(SUM('ProductionWorkOrder'[OrderQty]))
 
-* <strong> Previous Month Order</strong>:This measure simply getd the value of the order quantity in the previous month
+* <strong> Previous Month Order</strong>: This measure simply gets the value of the order quantity in the previous month
    ```dax
   Previous Month Order = CALCULATE([Order Measure], PREVIOUSMONTH('Calendar'[Date]))
 
@@ -59,19 +59,19 @@ After I was done with the Calender table, I created the following measures
   ```dax
   Order MOM Variance = [Order Measure] - [Previous Month Order]
 
-* <strong> Order MOM% Variance </strong>: This measure simply displays the percentage of the order MOM Variance
+* <strong> Order MOM% Variance </strong>: This measure simply displays the percentage of the Order MOM Variance
   ```dax
   Order MOM% Variance = DIVIDE([Order MOM Variance],[Previous Month Order],0)
 
-* <strong> OrderQty Measure </strong>: This measure was used to have a measure version of the Orderqty column in the Work Order table. The measure was used to create other measures needed for this analysis
-  '''dax
+* <strong> OrderQty Measure </strong>: This measure was used to have a measure version of the Orderqty column (in the Work Order table). The measure was used to create other measures needed for this analysis
+  ```dax
   OrderQty Measure = SUM('ProductionWorkOrder'[OrderQty])
 
 * <strong> Order SPLY </strong>: Using the SAMEPERIODLASTYEAR function in DAX, I extracted the orders for the previous year
   ```dax
   Order SPLY = CALCULATE ([OrderQty Measure], SAMEPERIODLASTYEAR('Calendar'[Date]))
 
-* <strong> MOM% OrderQty </strong>: This measure simply gets the percentage of the Month on Month Variance for the orders
+* <strong> MOM% OrderQty </strong>: This measure simply gets the percentage of the Month on Month Variance for the order quantites. 
   ```dax
   MOM% Orderqty = VAR __PREV_MONTH = CALCULATE(
     SUM(
